@@ -43,6 +43,14 @@ class Toolbox extends Component {
     }
   }
 
+  selectWithHotkey (hotkey) {
+    this.props.tools.forEach((tool)=>{
+      if (hotkey === tool.hotkey) {
+        this.selectTool(tool);
+      }
+    });
+  }
+
   render () {
     return (
       <div className="toolbox shadow">
@@ -54,6 +62,7 @@ class Toolbox extends Component {
                    key={tool.key} onClick={()=>this.selectTool(tool)}>
                 <img src={logo} className='tool-logo '
                      draggable='false' alt={tool.name} />
+                <div className='hotkey shadow'>{tool.hotkey}</div>
               </div>
             );
           })

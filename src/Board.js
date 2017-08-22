@@ -13,7 +13,7 @@ class Board extends Component {
 
   render () {
     return (
-      <div className={"board shadow" + (this.props.model.grabbed? ' grabbed': '')} ref="body"
+      <div className="board shadow" ref="body"
            onMouseMove={(e)=>(this.props.onMouseMove && this.props.onMouseMove(e))}
            onMouseUp={(e)=>(this.props.onMouseUp && this.props.onMouseUp(e))}>
         {

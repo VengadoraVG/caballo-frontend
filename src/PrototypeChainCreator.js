@@ -17,23 +17,38 @@ class PrototypeChainCreator extends Component {
     this.refs.toolbox.onBoardMouseUp(e);
   }
 
+  onKeyDown (e) {
+    this.refs.toolbox.selectWithHotkey(e.key);
+  }
+
+  componentDidMount () {
+    this.refs.body.focus();
+  }
+
   render () {
     var tool = [{
       key: 'move',
-      name: 'mover'
+      name: 'mover',
+      hotkey: '1'
     }, {
       key: 'delete',
-      name: 'borrar'
+      name: 'borrar',
+      hotkey: '2'
     }, {
       key: 'create-edge',
-      name: 'definir dependencia'
+      name: 'definir dependencia',
+      hotkey: '3'
     }, {
       key: 'add',
-      name: 'añadir prototipo'
+      name: 'añadir prototipo',
+      hotkey: '4'
     }];
     
     return (
-      <div className="prototype-chain-creator">
+      <div className="prototype-chain-creator"
+           tabIndex="0"
+           ref='body'
+           onKeyDown={(e)=>this.onKeyDown(e)}>
         <Toolbox tools={tool} model={this.props.model.toolbox} ref="toolbox"/>
         <Board model={this.props.model.board} activeTool={this.props.model.toolbox.active}
                onNodeMouseDown={(node, e)=>this.onNodeMouseDown(node, e)}
