@@ -1,0 +1,11 @@
+.board {
+    width: 60%;
+    height: 100%;
+
+    background-image: url(./img/background.svg);
+    border-radius: 20px;
+    display: block;
+    overflow: auto;
+    user-select: none;
+    position: relative;
+}

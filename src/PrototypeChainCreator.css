@@ -1,0 +1,17 @@
+.prototype-chain-creator {
+    box-sizing: border-box;
+    padding: 1em;
+    margin: 0 !important;
+
+    position: absolute;
+    height: 90%;
+    width: 90%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+    .prototype-chain-creator .shadow {
+        box-shadow: 5px 5px 5px rgba(0,0,0, 0.3);
+    }

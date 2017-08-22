@@ -1,0 +1,26 @@
+.inspector {
+    display: inline-flex;
+    flex-direction: column;
+    width: 20%;
+    border-radius: 20px;
+    background-color: #696;
+}
+
+    .inspector .title {
+        background-color: #363682;
+        border-radius: 20px 20px 5px 5px;
+        padding: 10px;
+
+        text-align: center;
+        color: white;
+        font-family: Baloo;
+        text-shadow: 0 0 8px rgba(255,255,255, 0.5);
+    }
+
+    .inspector .content {
+        padding: 10px;
+        margin: 10px;
+        border-radius: 10px;
+        background-color: rgba(255, 255, 255, 0.5);
+        font-family: Baloo;
+    }
