@@ -23,6 +23,7 @@ class PrototypeChainCreator extends Component {
 
   componentDidMount () {
     this.refs.body.focus();
+    this.refs.toolbox.board = this.refs.board;
   }
 
   render () {
@@ -37,7 +38,10 @@ class PrototypeChainCreator extends Component {
     }, {
       key: 'create-edge',
       name: 'definir dependencia',
-      hotkey: '3'
+      hotkey: '3',
+      reset () {
+        this.from = null;
+      }
     }, {
       key: 'add',
       name: 'añadir prototipo',
@@ -51,6 +55,7 @@ class PrototypeChainCreator extends Component {
            onKeyDown={(e)=>this.onKeyDown(e)}>
         <Toolbox tools={tool} model={this.props.model.toolbox} ref="toolbox"/>
         <Board model={this.props.model.board} activeTool={this.props.model.toolbox.active}
+               ref="board"
                onNodeMouseDown={(node, e)=>this.onNodeMouseDown(node, e)}
                onMouseMove={(e)=>this.onBoardMouseMove(e)}
                onMouseUp={(e)=>this.onBoardMouseUp(e)}

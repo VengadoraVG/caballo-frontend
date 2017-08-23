@@ -15,12 +15,21 @@ var theBoard = {
         y: 100,
         name: 'all your base'
       }, {
-        x: 200,
-        y: 200,
+        x: 100,
+        y: 500,
         name: 'are belong to us!'
       }],
-      dom: null
+      connection: {
+        0: [1,2]
+      },
+      connectionHash: {
+        0: {
+          1: true,
+          2: true
+        }
+      }
     },
+
 
     toolbox: {
       active: {

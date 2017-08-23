@@ -4,7 +4,7 @@ import './Toolbox.css';
 class Toolbox extends Component {
   selectTool (tool) {
     this.props.model.active.reset && this.props.model.active.reset();
-    this.props.model.active.key = tool.key;
+    this.props.model.active = tool;
     this.forceUpdate();
 
     this.props.onToolChange && this.props.onToolChange();
@@ -12,6 +12,22 @@ class Toolbox extends Component {
 
   onNodeMouseDown (node, e) {
     var active = this.props.model.active;
+
+    switch (active.key) {
+    case 'move':
+      active.grabbed = node;
+      node.grab();
+      active.anchorPoint = node.getAnchorPoint(e);
+      break;
+    case 'create-edge':
+      if (active.from) {
+        this.board.connect(active.from.props.index, node.props.index);
+        active.reset();
+      } else {
+        active.from = node;
+      }
+      break;
+    }
 
     if (active.key === 'move') {
       active.grabbed = node;
