@@ -20,21 +20,7 @@ var theBoard = {
         name: 'are belong to us!'
       }],
       connection: {
-        0: [1,2]
-      },
-      connectionHash: {
-        0: {
-          1: true,
-          2: true
-        }
-      }
-    },
-
-
-    toolbox: {
-      active: {
-        key: 'move',
-        base: 'are belong to us'
+        0: [1]
       }
     }
   }

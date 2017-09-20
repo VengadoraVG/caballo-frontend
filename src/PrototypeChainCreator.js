@@ -27,34 +27,46 @@ class PrototypeChainCreator extends Component {
   }
 
   render () {
-    var tool = [{
-      key: 'move',
-      name: 'mover',
-      hotkey: '1'
-    }, {
-      key: 'delete',
-      name: 'borrar',
-      hotkey: '2'
-    }, {
-      key: 'create-edge',
-      name: 'definir dependencia',
-      hotkey: '3',
-      reset () {
-        this.from = null;
-      }
-    }, {
-      key: 'add',
-      name: 'añadir prototipo',
-      hotkey: '4'
-    }];
+    var toolbox = {
+      tools: [{
+        key: 'move',
+        name: 'mover',
+        hotkey: '1'
+      }, {
+        key: 'delete',
+        name: 'borrar',
+        hotkey: '2',
+        edgeDistance: 15,
+        reset () {
+          if (this.selected.node) {
+            this.selected.node.unhighlight();
+            this.selected.node = null;
+          }
+          this.selected.from = this.selected.to = null;
+        }
+      }, {
+        key: 'create-edge',
+        name: 'definir dependencia',
+        hotkey: '3',
+        reset () {
+          this.from = null;
+        }
+      }, {
+        key: 'add',
+        name: 'añadir prototipo',
+        hotkey: '4'
+      }],
+      active: null
+    };
+    toolbox.active = toolbox.tools[0];
     
     return (
       <div className="prototype-chain-creator"
            tabIndex="0"
            ref='body'
            onKeyDown={(e)=>this.onKeyDown(e)}>
-        <Toolbox tools={tool} model={this.props.model.toolbox} ref="toolbox"/>
-        <Board model={this.props.model.board} activeTool={this.props.model.toolbox.active}
+        <Toolbox model={toolbox} ref="toolbox"/>
+        <Board model={this.props.model.board} toolboxModel={toolbox}
                ref="board"
                onNodeMouseDown={(node, e)=>this.onNodeMouseDown(node, e)}
                onMouseMove={(e)=>this.onBoardMouseMove(e)}

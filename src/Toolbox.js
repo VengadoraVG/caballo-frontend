@@ -28,12 +28,6 @@ class Toolbox extends Component {
       }
       break;
     }
-
-    if (active.key === 'move') {
-      active.grabbed = node;
-      node.grab();
-      active.anchorPoint = node.getAnchorPoint(e);
-    }
   }
 
   onBoardMouseMove (e) {
@@ -52,7 +46,6 @@ class Toolbox extends Component {
 
     if (active.key === 'move') {
       if (active.grabbed) {
-        active.grabbed.props.model.grabbed = false;
         active.grabbed.drop();
         active.anchorPoint = active.grabbed = null;
       }
@@ -60,7 +53,7 @@ class Toolbox extends Component {
   }
 
   selectWithHotkey (hotkey) {
-    this.props.tools.forEach((tool)=>{
+    this.props.model.tools.forEach((tool)=>{
       if (hotkey === tool.hotkey) {
         this.selectTool(tool);
       }
@@ -71,7 +64,7 @@ class Toolbox extends Component {
     return (
       <div className="toolbox shadow">
         {
-          this.props.tools.map((tool, index)=>{
+          this.props.model.tools.map((tool, index)=>{
             var logo = require('./img/' + tool.key + '.svg');
             return (
               <div className={'tool shadow ' + (tool.key === this.props.model.active.key? 'active': '' )}

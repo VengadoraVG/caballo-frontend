@@ -28,3 +28,7 @@
 .node p {
     text-align: center;    
 }
+
+.node.highlighted {
+    border: 5px solid #e66;
+}

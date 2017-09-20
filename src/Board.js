@@ -24,17 +24,59 @@ class Board extends Component {
     this.refs.canvas.redraw();
   }
 
-  connect (from, to) {
-    if (!this.props.model.connectionHash[from] ||
-        !this.props.model.connectionHash[from][to]) {
+  removeNode (nodeIndex) {
+    this.removeAllEdges(nodeIndex);
+    this.getModel().node.splice(nodeIndex, 1);
+    this.refs.canvas.redraw();
+    this.forceUpdate();
+
+    console.log(this.props.model.node.length);
+  }
+
+  removeAllEdges (nodeIndex) {
+    this.getModel().connection[nodeIndex] = null;
+  }
+
+  removeEdge (from, to) {
+    // TODO
+  }
+
+  getModel () {
+    return this.props.model;
+  }
+
+  connect (from, to) { // TODO: check if still dag
+    if (from === to) return false;
+
+    if (!this.checkConnection(from, to)) {
       this.props.model.connection[from] = this.props.model.connection[from] || [];
       this.props.model.connection[from].push(to);
-
-      this.props.model.connectionHash[from] = this.props.model.connectionHash[from] || {};
-      this.props.model.connectionHash[from][to] = true;
     }
 
     this.refs.canvas.redraw();
+    return true;
+  }
+
+  checkConnection (from, to) {
+    if (!this.getModel().connection[from]) return false;
+
+    for (var i=0; i<this.getModel().connection[from].length; i++) {
+      if (this.getModel().connection[from][i] === to) return true;
+    }
+
+    return false;
+  }
+
+  onNodeMousemove(node, e) {
+    this.refs.canvas.onNodeMousemove(node, e);
+  }
+
+  onNodeMouseDown (node, e) {
+    this.props.onNodeMouseDown && this.props.onNodeMouseDown(node, e);
+
+    if (this.props.toolboxModel.active.key === "delete") {
+      this.removeNode(node.props.index);
+    }
   }
 
   render () {
@@ -42,7 +84,8 @@ class Board extends Component {
       <div className="board shadow" ref="body"
            onMouseMove={(e)=>(this.props.onMouseMove && this.props.onMouseMove(e))}
            onMouseUp={(e)=>(this.props.onMouseUp && this.props.onMouseUp(e))}>
-        <Canvas model={this.props.model} board={this} ref="canvas"/>
+        <Canvas model={this.props.model} board={this} ref="canvas"
+                toolboxModel={this.props.toolboxModel}/>
         {
           this.props.model.node.map((item, index)=>{
             return(
@@ -50,11 +93,12 @@ class Board extends Component {
                     ref={'node-' + index}
                     board={this}
                     index={index}
-                    onMouseDown={(node, e)=>(this.props.onNodeMouseDown && this.props.onNodeMouseDown(node, e))}/>
+                    onMouseMove={(node, e)=>(this.onNodeMousemove(node, e))}
+                    onMouseDown={(node, e)=>(this.onNodeMouseDown(node, e))}
+                />
             );
           })
         }
-
       </div>
     );
   }

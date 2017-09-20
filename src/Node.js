@@ -10,6 +10,14 @@ class Node extends Component {
     this.props.board.redraw();
   }
 
+  x () {
+    return this.props.model.x;
+  }
+
+  y () {
+    return this.props.model.y;
+  }
+
   setPositionFromFixed (x, y) {
     var mouse = this.props.board.getMousePosition({
       clientX: x,
@@ -23,6 +31,19 @@ class Node extends Component {
       x: this.props.model.x + this.refs.body.offsetWidth/2,
       y: this.props.model.y + this.refs.body.offsetHeight/2
     };
+  }
+
+  getPointDistanceToEdge (origin, point) {
+    origin = origin.getMiddle();
+    var destination = this.getMiddle();
+    var v = Util.add(destination, origin, -1);
+    var c = Util.add(destination, point, -1);
+    var n = {
+      x: (-v.y * 100) / v.x,
+      y: 100
+    };
+
+    return Math.abs(Util.dot(c, n) / Util.magnitude(n));
   }
 
   getArrowPosition (origin) {
@@ -82,16 +103,32 @@ class Node extends Component {
   }
 
   drop () {
-    this.props.model.grabbed = false;
+    if (this.props.model.grabbed) {
+      this.props.model.grabbed = false;
+      this.forceUpdate();
+    }
+  }
+
+  highlight () {
+    this.props.model.highlighted = true;
     this.forceUpdate();
+  }
+
+  unhighlight () {
+    if (this.props.model.highlighted) {
+      this.props.model.highlighted = false;
+      this.forceUpdate();
+    }
   }
 
   render () {
     return (
       <div className={'node shadow' +
-           (this.props.model.grabbed? ' grabbed': '')}
+                      (this.props.model.grabbed? ' grabbed': '') +
+           (this.props.model.highlighted? " highlighted": " ") }
            style={{ left: this.props.model.x, top: this.props.model.y}}
            ref="body"
+           onMouseMove={(e)=>this.props.onMouseMove(this, e)}
            onMouseDown={(e)=>(this.props.onMouseDown &&
               this.props.onMouseDown(this, e))}>
 
