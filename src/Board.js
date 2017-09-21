@@ -24,6 +24,15 @@ class Board extends Component {
     this.refs.canvas.redraw();
   }
 
+  addNode (e) {
+    var point = this.getMousePosition(e);
+    this.getModel().node.push({
+      x: point.x,
+      y: point.y,
+      name: ''
+    });
+  }
+
   removeNode (nodeIndex) {
     this.removeAllEdges(nodeIndex);
     this.getModel().node[nodeIndex] = null;
@@ -43,9 +52,8 @@ class Board extends Component {
   removeEdge (from, to) {
     if (this.getModel().connection[from]) {
       var found = this.findConnection(from, to);
-      if (found !== null) {
+      if (found !== false) {
         this.getModel().connection[from].splice(found, 1);
-        console.log("removing from ", from, " to ", to);
       }
     }
   }

@@ -74,6 +74,9 @@ class Canvas extends Component {
     if (tool.key === "delete" && tool.from !== null) {
       this.props.board.removeEdge(tool.from, tool.to);
       this.redraw();
+    } else if (tool.key === 'add') {
+      this.props.board.addNode(e);
+      this.props.board.forceUpdate();
     }
   }
 
