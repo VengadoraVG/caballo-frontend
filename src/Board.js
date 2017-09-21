@@ -26,19 +26,28 @@ class Board extends Component {
 
   removeNode (nodeIndex) {
     this.removeAllEdges(nodeIndex);
-    this.getModel().node.splice(nodeIndex, 1);
+    this.getModel().node[nodeIndex] = null;
+
     this.refs.canvas.redraw();
     this.forceUpdate();
-
-    console.log(this.props.model.node.length);
   }
 
   removeAllEdges (nodeIndex) {
     this.getModel().connection[nodeIndex] = null;
+
+    for (var i=0; i<this.getModel().node.length; i++) {
+      this.removeEdge(i, nodeIndex);
+    }
   }
 
   removeEdge (from, to) {
-    // TODO
+    if (this.getModel().connection[from]) {
+      var found = this.findConnection(from, to);
+      if (found !== null) {
+        this.getModel().connection[from].splice(found, 1);
+        console.log("removing from ", from, " to ", to);
+      }
+    }
   }
 
   getModel () {
@@ -48,7 +57,7 @@ class Board extends Component {
   connect (from, to) { // TODO: check if still dag
     if (from === to) return false;
 
-    if (!this.checkConnection(from, to)) {
+    if (!this.findConnection(from, to)) {
       this.props.model.connection[from] = this.props.model.connection[from] || [];
       this.props.model.connection[from].push(to);
     }
@@ -57,11 +66,11 @@ class Board extends Component {
     return true;
   }
 
-  checkConnection (from, to) {
+  findConnection (from, to) {
     if (!this.getModel().connection[from]) return false;
 
     for (var i=0; i<this.getModel().connection[from].length; i++) {
-      if (this.getModel().connection[from][i] === to) return true;
+      if (this.getModel().connection[from][i] === to) return i;
     }
 
     return false;
@@ -74,8 +83,10 @@ class Board extends Component {
   onNodeMouseDown (node, e) {
     this.props.onNodeMouseDown && this.props.onNodeMouseDown(node, e);
 
-    if (this.props.toolboxModel.active.key === "delete") {
+    var activeTool = this.props.toolboxModel.active;
+    if (activeTool.key === "delete") {
       this.removeNode(node.props.index);
+      this.removeEdge(activeTool.from, activeTool.to);
     }
   }
 
@@ -88,15 +99,19 @@ class Board extends Component {
                 toolboxModel={this.props.toolboxModel}/>
         {
           this.props.model.node.map((item, index)=>{
-            return(
-              <Node key={'node-' + index} model={item}
-                    ref={'node-' + index}
-                    board={this}
-                    index={index}
-                    onMouseMove={(node, e)=>(this.onNodeMousemove(node, e))}
-                    onMouseDown={(node, e)=>(this.onNodeMouseDown(node, e))}
-                />
-            );
+            if (item) {
+              return(
+                <Node key={'node-' + index} model={item}
+                      ref={'node-' + index}
+                      board={this}
+                      index={index}
+                      onMouseMove={(node, e)=>(this.onNodeMousemove(node, e))}
+                      onMouseDown={(node, e)=>(this.onNodeMouseDown(node, e))}
+                  />
+              );
+            } else {
+              return null;
+            }
           })
         }
       </div>

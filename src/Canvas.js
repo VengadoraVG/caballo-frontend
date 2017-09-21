@@ -69,11 +69,13 @@ class Canvas extends Component {
       Util.isInBox(fromNode.getMiddle, toNode.getMiddle(), point);
   }
 
-  // verifyEdgeDeletion (from, to, mouse) {
-  //   // mouse = this.props.board.getMousePosition(e);
-  //   // if (to.getPointDistanceToEdge(from, mouse) <
-  //   //     this.props.toolboxModel.active.edgeDistance) {}
-  // }
+  onMouseDown (e) {
+    var tool = this.props.toolboxModel.active;
+    if (tool.key === "delete" && tool.from !== null) {
+      this.props.board.removeEdge(tool.from, tool.to);
+      this.redraw();
+    }
+  }
 
   onMouseMove (e) {
     if (this.props.toolboxModel.active.selected &&
@@ -88,11 +90,13 @@ class Canvas extends Component {
     if (this.props.toolboxModel.active.key === 'delete') {
       this.redraw();
 
+      this.props.toolboxModel.active.from = this.props.toolboxModel.active.to = null;
+      this.props.toolboxModel.active.selected =
+        this.props.toolboxModel.active.selected || {};
       for (from in model.connection) {
 
         if (model.connection.hasOwnProperty(from) && model.connection[from]) {
           fromNode = board.getNode(from);
-
           model.connection[from].forEach((to, index)=> {
             toNode = board.getNode(to);
 
@@ -114,6 +118,9 @@ class Canvas extends Component {
               this.props.toolboxModel.active.type = 'connection';
               this.drawLine(toNode.getMiddle(), fromNode.getMiddle());
               this.drawArrow(fromNode, toNode);
+
+              this.props.toolboxModel.active.from = fromNode.props.index;
+              this.props.toolboxModel.active.to = toNode.props.index;
             }
           });
         }
@@ -146,6 +153,7 @@ class Canvas extends Component {
   render () {
     return (
       <canvas className='board-canvas' ref="canvas"
+              onMouseDown={(e)=>this.onMouseDown(e)}
               onMouseMove={(e)=>this.onMouseMove(e)}></canvas>
     );
   }

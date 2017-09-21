@@ -7,6 +7,7 @@ import Inspector from './Inspector';
 class PrototypeChainCreator extends Component {
   onNodeMouseDown (node, e) {
     this.refs.toolbox.onNodeMouseDown && this.refs.toolbox.onNodeMouseDown(node, e);
+    this.refs.body.focus();
   }
 
   onBoardMouseMove (e) {
@@ -19,6 +20,11 @@ class PrototypeChainCreator extends Component {
 
   onKeyDown (e) {
     this.refs.toolbox.selectWithHotkey(e.key);
+  }
+
+  onFocusOut (e) {
+    e.stopPropagation();
+    this.refs.body.focus();
   }
 
   componentDidMount () {
@@ -38,11 +44,13 @@ class PrototypeChainCreator extends Component {
         hotkey: '2',
         edgeDistance: 15,
         reset () {
-          if (this.selected.node) {
-            this.selected.node.unhighlight();
-            this.selected.node = null;
+          if (this.selected) {
+            if (this.selected.node) {
+              this.selected.node.unhighlight();
+              this.selected.node = null;
+            }
+            this.selected.from = this.selected.to = null;
           }
-          this.selected.from = this.selected.to = null;
         }
       }, {
         key: 'create-edge',
@@ -64,7 +72,9 @@ class PrototypeChainCreator extends Component {
       <div className="prototype-chain-creator"
            tabIndex="0"
            ref='body'
-           onKeyDown={(e)=>this.onKeyDown(e)}>
+           onBlur={(e)=>this.onFocusOut(e)}
+           onKeyDown={(e)=>this.onKeyDown(e)}
+        >
         <Toolbox model={toolbox} ref="toolbox"/>
         <Board model={this.props.model.board} toolboxModel={toolbox}
                ref="board"
